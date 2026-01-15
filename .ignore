@@ -1,0 +1,16 @@
+# Configuration file for LOSSLESS to MP3 converter
+# List file extensions that should be ignored during copying
+# One extension per line (without dots)
+# Lines starting with # are comments
+
+log
+m3u
+m3u8
+cue
+nfo
+sfv
+md5
+txt
+accurip
+mpg
+url
