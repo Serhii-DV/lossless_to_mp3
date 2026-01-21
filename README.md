@@ -1,6 +1,6 @@
 # Lossless Audio to MP3 Converter
 
-A powerful bash script that converts audio files (FLAC, WAV, M4A, APE) to high-quality MP3 format (320kbps) while preserving folder structure and metadata. Features include **CUE file support** for splitting solid audio files, single album and batch processing modes with intelligent file filtering.
+A powerful bash script that converts audio files (FLAC, WAV, M4A, AIFF, APE) to high-quality MP3 format (320kbps) while preserving folder structure and metadata. Features include **CUE file support** for splitting solid audio files, single album and batch processing modes with intelligent file filtering.
 
 ## Prerequisites
 
@@ -43,6 +43,7 @@ ffmpeg -version
 - **FLAC** - Free Lossless Audio Codec
 - **WAV** - Waveform Audio File Format
 - **M4A** - MPEG-4 Audio (including AAC and ALAC)
+- **AIFF** - Audio Interchange File Format
 - **APE** - Monkey's Audio (lossless compression)
 - **CUE** - Cue sheets for splitting solid audio files
 
@@ -172,7 +173,7 @@ Ignore specific file types during processing:
 
 ## Features
 
-- **Multi-Format Support**: Converts FLAC, WAV, M4A, and APE to MP3
+- **Multi-Format Support**: Converts FLAC, WAV, M4A, AIFF and APE to MP3
 - **CUE File Support**: Automatically detects and splits solid audio files using cue sheets
 - **Dual Processing Modes**: Single album or batch processing
 - **High Quality**: 320kbps MP3 output with full metadata preservation
@@ -197,14 +198,14 @@ Ignore specific file types during processing:
 ### CUE File Processing (Priority)
 
 1. **CUE Detection**: Scans for `.cue` files in input directory
-2. **Audio Matching**: Locates associated solid audio files (FLAC/WAV/APE/M4A)
+2. **Audio Matching**: Locates associated solid audio files (FLAC/WAV/AIFF/APE/M4A)
 3. **Track Splitting**: Uses `cuebreakpoints` and `shnsplit` to split into individual tracks
 4. **Track Naming**: Extracts track titles from CUE file or uses "Track XX" format
 5. **MP3 Conversion**: Converts each split track directly to MP3 (320kbps)
 
 ### Audio Conversion
 
-- **Individual FLAC/WAV/M4A/APE** → **MP3** (320kbps, metadata preserved)
+- **Individual FLAC/WAV/M4A/AIFF/APE** → **MP3** (320kbps, metadata preserved)
 - **Note**: Files already processed via CUE splitting are automatically excluded
 
 ### Image Processing
@@ -259,7 +260,8 @@ Input:
 ├── 01 - Track One.flac
 ├── 02 - Track Two.wav
 ├── 03 - Track Three.m4a
-├── 04 - Track Four.ape
+├── 04 - Track Four.aiff
+├── 05 - Track Five.ape
 ├── bonus/
 │   └── hidden.flac
 ├── cover.png
@@ -273,6 +275,7 @@ Output:
 ├── 02 - Track Two.mp3
 ├── 03 - Track Three.mp3
 ├── 04 - Track Four.mp3
+├── 05 - Track Five.mp3
 ├── bonus/
 │   └── hidden.mp3
 ├── cover.jpg         # PNG converted to JPG
@@ -358,7 +361,7 @@ Failed: 0
 - **Bitrate**: 320kbps (constant bitrate)
 - **ID3 Version**: v2.3 with v1 fallback
 - **Metadata Mapping**: Preserves all metadata from source files
-- **Supported Input**: FLAC, WAV, M4A, APE audio files
+- **Supported Input**: FLAC, WAV, M4A, AIFF, APE audio files
 - **Image Processing**: PNG to JPG conversion using ffmpeg
 - **Path Resolution**: Robust handling with realpath for symbolic links
 - **Configuration**: External file support with comment and whitespace handling

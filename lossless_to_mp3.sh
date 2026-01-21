@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Audio to MP3 Converter Script
-# Converts FLAC, WAV, M4A, and APE files to MP3 320kbps while preserving folder structure
+# Converts FLAC, WAV, M4A, AIFF and APE files to MP3 320kbps while preserving folder structure
 
 set -euo pipefail
 
@@ -27,7 +27,7 @@ fi
 
 show_usage() {
     echo "Usage: $0 -i INPUT_DIR [-o OUTPUT_DIR] [-c CONFIG_FILE] [-b]"
-    echo "  -i, --input DIR     Input directory containing audio files (FLAC, WAV, M4A, APE)"
+    echo "  -i, --input DIR     Input directory containing audio files (FLAC, WAV, M4A, AIFF, APE)"
     echo "                      Also supports CUE files for splitting solid audio files"
     echo "  -o, --output DIR    Output directory for converted MP3 files (optional)"
     echo "                      If not specified, creates 'INPUT_DIR (mp3)'"
@@ -126,7 +126,7 @@ process_cue_file() {
 
     # If not found from CUE file, look for common audio files in the same directory
     if [[ -z "$audio_file" ]]; then
-        for ext in flac wav ape m4a; do
+        for ext in flac wav ape m4a aiff; do
             local candidate=$(find "$cue_dir" -maxdepth 1 -type f -iname "*.$ext" | head -1)
             if [[ -n "$candidate" ]]; then
                 audio_file="$candidate"
@@ -352,8 +352,8 @@ convert_audio() {
     extension="${extension,,}"  # Convert to lowercase
 
     # Check if it's a supported audio format
-    if [[ "$extension" != "flac" && "$extension" != "wav" && "$extension" != "m4a" && "$extension" != "ape" ]]; then
-        echo "Warning: '$input_file' is not a supported audio file (FLAC/WAV/M4A/APE), skipping..."
+    if [[ "$extension" != "flac" && "$extension" != "wav" && "$extension" != "m4a" && "$extension" != "aiff" && "$extension" != "ape" ]]; then
+        echo "Warning: '$input_file' is not a supported audio file (FLAC/WAV/M4A/AIFF/APE), skipping..."
         return 0
     fi
 
@@ -489,7 +489,7 @@ copy_other_files() {
 
     # Find all files that are NOT audio files
     local temp_file=$(mktemp)
-    find "$INPUT_DIR" -type f ! \( -iname "*.flac" -o -iname "*.wav" -o -iname "*.m4a" -o -iname "*.ape" \) > "$temp_file"
+    find "$INPUT_DIR" -type f ! \( -iname "*.flac" -o -iname "*.wav" -o -iname "*.m4a" -o -iname "*.aiff" -o -iname "*.ape" \) > "$temp_file"
 
     local total_other_files=$(wc -l < "$temp_file")
 
@@ -676,7 +676,7 @@ process_directory() {
         echo
     fi
 
-    echo "Searching for individual audio files (FLAC, WAV, M4A, APE)..."
+    echo "Searching for individual audio files (FLAC, WAV, M4A, AIFF, APE)..."
     echo
 
     # Find individual audio files, but exclude those that might be solid files with CUE sheets
@@ -697,12 +697,12 @@ process_directory() {
             fi
         else
             # Look for any audio file in the same directory as the CUE file
-            find "$cue_dir" -maxdepth 1 -type f \( -iname "*.flac" -o -iname "*.wav" -o -iname "*.m4a" -o -iname "*.ape" \) | head -1
+            find "$cue_dir" -maxdepth 1 -type f \( -iname "*.flac" -o -iname "*.wav" -o -iname "*.m4a" -o -iname "*.aiff" -o -iname "*.ape" \) | head -1
         fi
     done | sort -u > "$cue_audio_files"
 
     # Find all audio files, then exclude those associated with CUE files
-    find "$INPUT_DIR" -type f \( -iname "*.flac" -o -iname "*.wav" -o -iname "*.m4a" -o -iname "*.ape" \) | while read -r audio_file; do
+    find "$INPUT_DIR" -type f \( -iname "*.flac" -o -iname "*.wav" -o -iname "*.m4a" -o -iname "*.aiff" -o -iname "*.ape" \) | while read -r audio_file; do
         if ! grep -Fxq "$audio_file" "$cue_audio_files"; then
             echo "$audio_file"
         fi
